@@ -1,0 +1,4 @@
+[Project]
+Name=libssh2pp
+Manager=KDevCMakeManager
+VersionControl=kdevgit
