@@ -1,6 +1,6 @@
-
 #include "libssh2.hpp"
 #include <iostream>
+#include <bitset>
 
 int main(int argc, char **argv) {
     std::cout << "Hello, world!" << std::endl;
@@ -12,9 +12,9 @@ int main(int argc, char **argv) {
         std::cout << "SHA1 fingerprint: " << f.get_hex_sha1() << std::endl
             << "MD5  fingerprint: " << f.get_hex_md5() << std::endl;
             
-        std::cout << "Auth methods for ruben: " << int(s.get_auth_methods("ruben")) << std::endl;
+        std::cout << "Auth methods for ruben: " << std::bitset<8>(s.get_auth_methods("ruben")) << std::endl;
         
-        s.auth_password("user","password");
+        s.auth_password("username","password");
         libssh2::channel* c = s.open_channel();
         c->request_pty();
     }
