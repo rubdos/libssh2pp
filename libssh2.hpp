@@ -298,6 +298,7 @@ namespace libssh2
             if (strstr(userauthlist, "publickey") != NULL) {
                 types |= auth_methods::KEYS;
             }
+            return types;
         }
         fingerprint get_host_fingerprint()
         {
