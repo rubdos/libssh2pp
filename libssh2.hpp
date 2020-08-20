@@ -131,6 +131,12 @@ namespace libssh2
                 throw e;
             }
         }
+
+        LIBSSH2_CHANNEL* get_channel_ptr()
+        {
+            return _chan;
+        }
+
         ~channel()
         {
             libssh2_channel_free(this->_chan);
@@ -298,6 +304,7 @@ namespace libssh2
             if (strstr(userauthlist, "publickey") != NULL) {
                 types |= auth_methods::KEYS;
             }
+            return types;
         }
         fingerprint get_host_fingerprint()
         {
@@ -324,6 +331,40 @@ namespace libssh2
             channel* c = new channel(_chan);
             return c;
         }
+
+
+        channel* open_scp_channel(std::string path, FILE *local)
+        {
+            struct stat fileinfo;
+               
+            stat("./test.txt", &fileinfo);
+
+            LIBSSH2_CHANNEL* _chan;
+            if (!(_chan = libssh2_scp_send(this->_sess,path.c_str(),fileinfo.st_mode & 0777,(unsigned long)fileinfo.st_size)))
+            {
+                exception e("Could not open scp send channel");
+                throw e;
+            }
+            channel* c = new channel(_chan);
+            return c;
+        }
+
+        LIBSSH2_SESSION* get_session_ptr()
+        {
+            return _sess;
+        }
+
+        int get_session_last_error(std::string &error_str)
+        {
+            int err;
+            char* errmsg;
+            int errlen;
+
+            err = libssh2_session_last_error(_sess,&errmsg,&errlen,0);
+            error_str.insert(error_str.size(),errmsg,errlen);
+            return err;
+        }
+
         virtual ~session()
         {
             // TODO Make sure the session is shut down and channels are closed
